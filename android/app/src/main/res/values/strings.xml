@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">FocusLab</string>
+    <string name="focus_title">Focus timer</string>
+    <string name="focus_subtitle">Choose a session and protect your attention.</string>
+    <string name="timer_idle">Ready to focus</string>
+    <string name="timer_running">Focus in progress</string>
+    <string name="timer_paused">Session paused</string>
+    <string name="timer_completed">Session complete</string>
+    <string name="timer_accessibility">%1$s remaining</string>
+    <string name="timer_accessibility_parts">%1$s %2$s</string>
+    <plurals name="minutes_remaining">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="seconds_remaining">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <string name="duration_25_minutes">25 min</string>
+    <string name="duration_50_minutes">50 min</string>
+    <string name="action_start">Start</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_reset">Reset</string>
+</resources>
+
