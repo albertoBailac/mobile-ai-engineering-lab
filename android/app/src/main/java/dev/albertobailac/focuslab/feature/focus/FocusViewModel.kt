@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -23,7 +24,7 @@ class FocusViewModel internal constructor(
     private var tickerJob: Job? = null
 
     private val mutableUiState = kotlinx.coroutines.flow.MutableStateFlow(restoreState())
-    val uiState: kotlinx.coroutines.flow.StateFlow<FocusUiState> = mutableUiState
+    val uiState: kotlinx.coroutines.flow.StateFlow<FocusUiState> = mutableUiState.asStateFlow()
 
     init {
         persistState()
