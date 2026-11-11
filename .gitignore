@@ -1,0 +1,44 @@
+# Operating systems
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Android and Gradle
+.gradle/
+.kotlin/
+**/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android signing and secrets
+*.jks
+*.keystore
+keystore.properties
+*.properties.local
+.env
+.env.*
+!.env.example
+
+# Xcode and Swift
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+xcuserdata/
+.build/
+.swiftpm/
+Pods/
+
+# Local agent configuration
+CLAUDE.local.md
+.claude/settings.local.json
+
