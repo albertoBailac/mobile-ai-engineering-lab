@@ -6,7 +6,7 @@ This repository keeps durable engineering rules separate from task-specific work
 - `.agents/skills/implement-mobile-feature/` contains the implementation workflow used by Codex.
 - `.agents/skills/review-mobile-change/` contains the review workflow used by Codex.
 
-The skills are intentionally short and contain only public, repository-specific guidance. They do not embed prompts, policies, source code, or paths from another project.
+The skills are intentionally short and contain only public, repository-specific guidance. They do not embed prompts, policies, source code, or paths from another project. Both platforms require implementation and pre-handoff review workflows, with verification results reported separately from compilation-only checks.
 
 ## Codex
 
