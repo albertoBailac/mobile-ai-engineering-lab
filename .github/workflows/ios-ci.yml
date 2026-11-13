@@ -1,0 +1,133 @@
+name: iOS CI
+
+on:
+  pull_request:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios-ci.yml"
+  push:
+    branches:
+      - main
+      - "feature/**"
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+  PROJECT: ios/FocusLab.xcodeproj
+  SCHEME: FocusLab
+  DESTINATION: platform=iOS Simulator,name=iPhone 17,OS=26.5
+
+jobs:
+  build:
+    name: Build application
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Report Xcode version
+        run: xcodebuild -version
+
+      - name: Build FocusLab
+        run: >-
+          xcodebuild build
+          -project "$PROJECT"
+          -scheme "$SCHEME"
+          -configuration Debug
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/focuslab-build-derived"
+          -resultBundlePath "$RUNNER_TEMP/FocusLabBuild.xcresult"
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload build evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: FocusLabBuild-xcresult
+          path: ${{ runner.temp }}/FocusLabBuild.xcresult
+          if-no-files-found: warn
+
+  unit-tests:
+    name: Unit tests
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Report Xcode and simulator availability
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available
+
+      - name: Run Swift Testing suite
+        run: >-
+          xcodebuild test
+          -project "$PROJECT"
+          -scheme "$SCHEME"
+          -destination "$DESTINATION"
+          -derivedDataPath "$RUNNER_TEMP/focuslab-unit-derived"
+          -resultBundlePath "$RUNNER_TEMP/FocusLabUnitTests.xcresult"
+          -only-testing:FocusLabTests
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload unit-test evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: FocusLabUnitTests-xcresult
+          path: ${{ runner.temp }}/FocusLabUnitTests.xcresult
+          if-no-files-found: warn
+
+  ui-tests:
+    name: UI tests (${{ matrix.label }})
+    runs-on: macos-26
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: iPhone 17
+            artifact: iPhone-17
+            destination: platform=iOS Simulator,name=iPhone 17,OS=26.5
+          - label: iPad Pro 11-inch
+            artifact: iPad-Pro-11-inch
+            destination: platform=iOS Simulator,name=iPad Pro 11-inch (M5),OS=26.5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Report Xcode and simulator availability
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available
+
+      - name: Run XCUITest suite
+        run: >-
+          xcodebuild test
+          -project "$PROJECT"
+          -scheme "$SCHEME"
+          -destination '${{ matrix.destination }}'
+          -derivedDataPath "$RUNNER_TEMP/focuslab-ui-derived"
+          -resultBundlePath "$RUNNER_TEMP/FocusLabUITests.xcresult"
+          -only-testing:FocusLabUITests
+          -parallel-testing-enabled NO
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload UI-test evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: FocusLabUITests-${{ matrix.artifact }}-xcresult
+          path: ${{ runner.temp }}/FocusLabUITests.xcresult
+          if-no-files-found: warn
