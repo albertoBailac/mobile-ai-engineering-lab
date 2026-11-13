@@ -17,7 +17,16 @@ For Android work:
 - Use resources for user-facing text and semantics.
 - Add focused unit tests for logic and ViewModels, plus instrumented Compose coverage for important UI behavior.
 
-Run the narrowest useful checks while iterating. Before handoff, run the Android verification commands from `AGENTS.md` when the environment supports them. Never claim an unexecuted check passed.
+For iOS work:
+
+- Model screen state as immutable values exposed read-only from an `@MainActor` Observation ViewModel.
+- Send user, ticker, and `scenePhase` events as explicit actions; keep SwiftUI views free of timing and transition logic.
+- Use `ContinuousClock` deadlines and inject both the clock and refresh scheduler so tests run the real ticker without wall-clock sleeps.
+- Treat `@SceneStorage` as best-effort scene reconstruction, not guaranteed process persistence.
+- Enable complete Swift 6 concurrency checking without `@unchecked Sendable` or unjustified diagnostic suppression.
+- Add Swift Testing coverage for logic and ViewModels, XCUITest for important user-visible behavior, and independent light/dark previews for relevant states.
+
+Run the narrowest useful checks while iterating. Before handoff, run the applicable platform verification commands from `AGENTS.md` when the environment supports them. Report build, unit tests, and UI tests separately, and never claim an unexecuted check passed.
 
 Finish with a concise summary of behavior, files changed, architecture decisions, executed checks, unexecuted checks, and remaining limitations. Do not commit or push unless explicitly requested.
 

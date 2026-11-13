@@ -2,18 +2,18 @@
 
 A public portfolio for native Android and iOS engineering, built with AI-assisted development, pragmatic architecture, automated testing, and reproducible workflows.
 
-## Current project: FocusLab for Android
+## Current project: FocusLab
 
-FocusLab is a focused-session timer implemented with Kotlin, Jetpack Compose, Material 3, and MVVM. Its first iteration demonstrates:
+FocusLab is a focused-session timer implemented natively for Android and iOS. The two applications share behavior while demonstrating each platform's conventions:
 
 - Monotonic elapsed-time tracking that is resilient to wall-clock changes.
 - Correct recalculation after rotation and foreground/background transitions.
-- Immutable UI state exposed through `StateFlow`.
-- Local unit tests for timer and ViewModel behavior.
-- Instrumented Compose tests for interaction and accessibility semantics.
-- Android lint, unit tests, and debug assembly in GitHub Actions.
+- Immutable unidirectional UI state with `StateFlow` on Android and Observation on iOS.
+- Deterministic timer and ViewModel tests, including controllable tick schedulers.
+- Compose and XCUITest coverage for interaction and accessibility.
+- Independent Android and iOS GitHub Actions workflows.
 
-FocusLab intentionally avoids persistence, dependency injection, background services, and premature modularization. See [the architecture notes](docs/architecture.md) for the decisions and restoration limits.
+FocusLab intentionally avoids durable persistence, dependency injection, background services, and premature modularization. See [the architecture notes](docs/architecture.md) for platform-specific restoration limits.
 
 ## Technology
 
@@ -23,12 +23,15 @@ FocusLab intentionally avoids persistence, dependency injection, background serv
 - Android API 37, minimum API 26
 - AndroidX Lifecycle, `StateFlow`, and Kotlin coroutines
 - JUnit and instrumented Compose UI testing
+- SwiftUI, Swift 6, and Observation with complete concurrency checking
+- `ContinuousClock`, Swift Testing, and XCUITest
+- Xcode 26.6, iOS 17 minimum, and the iOS 26.5 SDK
 
 ## Repository
 
 ```text
 android/         FocusLab Android application
-ios/             Native iOS roadmap
+ios/             Native SwiftUI FocusLab application
 docs/            Architecture and AI-assisted workflow notes
 .agents/skills/  Reusable Codex workflows
 .github/         Continuous integration
@@ -55,6 +58,8 @@ Instrumented Compose tests require a connected device or emulator and are intent
 ./gradlew connectedDebugAndroidTest
 ```
 
+For iOS, use Xcode 26.6 and run the build, unit-test, and UI-test commands documented in [`ios/README.md`](ios/README.md). They remain separate gates so compilation is never reported as test execution.
+
 ## AI-assisted engineering
 
 Repository rules live in [`AGENTS.md`](AGENTS.md), while repeatable implementation and review workflows live in `.agents/skills/`. Codex is the primary supported agent; Claude Code integration is optional and uses the same canonical instructions. The workflow and privacy boundaries are documented in [AI-assisted development](docs/ai-assisted-development.md).
@@ -62,7 +67,6 @@ Repository rules live in [`AGENTS.md`](AGENTS.md), while repeatable implementati
 ## Roadmap
 
 - Polish FocusLab with durable user preferences and notifications only after defining their product requirements.
-- Add a native SwiftUI portfolio application under `ios/`.
 - Expand CI with instrumented Android tests when emulator cost and reliability are evaluated.
 - Add release automation and store-ready quality gates in later milestones.
 
