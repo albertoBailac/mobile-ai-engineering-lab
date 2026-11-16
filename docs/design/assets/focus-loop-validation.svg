@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 3480 1440"
+    width="3480"
+    height="1440"
+    role="img"
+    aria-labelledby="validation-title validation-description">
+  <title id="validation-title">Focus Loop visual validation sheet</title>
+  <desc id="validation-description">The Focus Loop geometry rendered at actual 16, 24, 48, 128, and 1024 pixel dimensions in light, dark, and monochrome treatments.</desc>
+
+  <defs>
+    <g id="focus-loop-geometry" fill="none">
+      <path
+          d="M19.99 9.09A8.5 8.5 0 1 1 16.88 5.04"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round" />
+      <circle cx="12" cy="12" r="1.25" fill="currentColor" />
+      <circle cx="19.93" cy="5.91" r="1.15" fill="currentColor" />
+    </g>
+  </defs>
+
+  <g aria-label="Light treatment">
+    <rect width="1120" height="1440" rx="32" fill="#F7F8FC" />
+    <g fill="#181B25" font-family="system-ui, sans-serif">
+      <text x="48" y="56" font-size="28" font-weight="600">Light</text>
+      <text x="48" y="92" font-size="18">Actual render dimensions</text>
+      <text x="48" y="132" font-size="16">16 px</text>
+      <text x="120" y="132" font-size="16">24 px</text>
+      <text x="208" y="132" font-size="16">48 px</text>
+      <text x="320" y="132" font-size="16">128 px</text>
+      <text x="48" y="304" font-size="18">1024 px</text>
+    </g>
+    <svg x="48" y="148" width="16" height="16" viewBox="0 0 24 24" color="#4F46E5">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="120" y="148" width="24" height="24" viewBox="0 0 24 24" color="#4F46E5">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="208" y="148" width="48" height="48" viewBox="0 0 24 24" color="#4F46E5">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="320" y="148" width="128" height="128" viewBox="0 0 24 24" color="#4F46E5">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="48" y="320" width="1024" height="1024" viewBox="0 0 24 24" color="#4F46E5">
+      <use href="#focus-loop-geometry" />
+    </svg>
+  </g>
+
+  <g transform="translate(1180 0)" aria-label="Dark treatment">
+    <rect width="1120" height="1440" rx="32" fill="#101118" />
+    <g fill="#F2F3FA" font-family="system-ui, sans-serif">
+      <text x="48" y="56" font-size="28" font-weight="600">Dark</text>
+      <text x="48" y="92" font-size="18">Actual render dimensions</text>
+      <text x="48" y="132" font-size="16">16 px</text>
+      <text x="120" y="132" font-size="16">24 px</text>
+      <text x="208" y="132" font-size="16">48 px</text>
+      <text x="320" y="132" font-size="16">128 px</text>
+      <text x="48" y="304" font-size="18">1024 px</text>
+    </g>
+    <svg x="48" y="148" width="16" height="16" viewBox="0 0 24 24" color="#C5C4FF">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="120" y="148" width="24" height="24" viewBox="0 0 24 24" color="#C5C4FF">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="208" y="148" width="48" height="48" viewBox="0 0 24 24" color="#C5C4FF">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="320" y="148" width="128" height="128" viewBox="0 0 24 24" color="#C5C4FF">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="48" y="320" width="1024" height="1024" viewBox="0 0 24 24" color="#C5C4FF">
+      <use href="#focus-loop-geometry" />
+    </svg>
+  </g>
+
+  <g transform="translate(2360 0)" aria-label="Monochrome treatment">
+    <rect width="1120" height="1440" rx="32" fill="#FFFFFF" />
+    <g fill="#000000" font-family="system-ui, sans-serif">
+      <text x="48" y="56" font-size="28" font-weight="600">Monochrome</text>
+      <text x="48" y="92" font-size="18">Actual render dimensions</text>
+      <text x="48" y="132" font-size="16">16 px</text>
+      <text x="120" y="132" font-size="16">24 px</text>
+      <text x="208" y="132" font-size="16">48 px</text>
+      <text x="320" y="132" font-size="16">128 px</text>
+      <text x="48" y="304" font-size="18">1024 px</text>
+    </g>
+    <svg x="48" y="148" width="16" height="16" viewBox="0 0 24 24" color="#000000">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="120" y="148" width="24" height="24" viewBox="0 0 24 24" color="#000000">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="208" y="148" width="48" height="48" viewBox="0 0 24 24" color="#000000">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="320" y="148" width="128" height="128" viewBox="0 0 24 24" color="#000000">
+      <use href="#focus-loop-geometry" />
+    </svg>
+    <svg x="48" y="320" width="1024" height="1024" viewBox="0 0 24 24" color="#000000">
+      <use href="#focus-loop-geometry" />
+    </svg>
+  </g>
+</svg>
