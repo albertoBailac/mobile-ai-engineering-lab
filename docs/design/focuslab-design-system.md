@@ -186,21 +186,49 @@ No original mood-board images, AI-generated concept sheets, or licensed external
 
 For future AI-assisted explorations, record the tool and model, date, full prompt, parameters, input references, reference authors and licenses, and the human reconstruction performed. Use only owned material or material with a compatible, documented license. Check proposed marks for accidental similarity to existing brands before product use. Generated raster output is a reference, never the vector source of truth.
 
-### Android, later delivery
+### Android VectorDrawable integration
 
-1. Import the master into Vector Asset Studio and inspect the resulting `VectorDrawable`.
+1. Convert the master geometry to a 24×24 `VectorDrawable`, preserving the arc, round caps, center point, and accent.
 2. Confirm that the arc, round caps, center point, and accent survive conversion at small sizes.
-3. Apply semantic tint from Compose rather than baking theme colors into the geometry.
+3. Apply `color.action.primary` through Compose tint rather than baking a brand color into the geometry.
 4. Design adaptive, round, monochrome, and legacy application icons as a separate exercise. Do not promote the master symbol directly to an AppIcon.
 
 Android does not render arbitrary SVG files as drawable resources. Unsupported SVG features must be flattened or redrawn, which is why the master intentionally uses only an arc and circles.
 
-### iOS, later delivery
+### iOS vector export
 
-1. Export the master as a single-scale vector PDF and preserve vector representation in the asset catalog.
-2. Configure it as a template image when semantic tint is required.
-3. Use SF Symbols for standard actions and reserve Focus Loop for identity.
-4. Design and validate Any, Dark, and Tinted application icon compositions separately.
+Focus Loop is exported with CairoSVG 2.9.1 in a temporary Python virtual environment. This delivery used Cairo 1.18.4. Neither Python packages nor native libraries are added to the project.
+
+Reproducing the export requires:
+
+- Python 3.10 or later with `venv` and `pip`.
+- CairoSVG 2.9.1 installed only inside the temporary virtual environment.
+- A compatible native Cairo shared library already installed on the host and discoverable by its dynamic loader. The Python virtual environment does not provide this native dependency.
+- Optional Poppler tools (`pdfinfo`, `pdfimages`, and `pdffonts`) for the PDF validation commands below.
+
+Run the commands from the repository root. `cairosvg --version` is a preflight check: if it cannot load Cairo, stop and provision the native dependency according to the host operating system rather than adding it to the project.
+
+The reproducible export commands are:
+
+```bash
+CAIROSVG_VENV="${TMPDIR:-/tmp}/focuslab-cairosvg-2.9.1"
+python3 -m venv "$CAIROSVG_VENV"
+"$CAIROSVG_VENV/bin/python" -m pip install "CairoSVG==2.9.1"
+"$CAIROSVG_VENV/bin/cairosvg" --version
+"$CAIROSVG_VENV/bin/cairosvg" \
+  --format pdf \
+  --dpi 72 \
+  --output ios/FocusLab/Resources/Assets.xcassets/FocusLoop.imageset/FocusLoop.pdf \
+  docs/design/assets/focus-loop-master.svg
+
+pdfinfo ios/FocusLab/Resources/Assets.xcassets/FocusLoop.imageset/FocusLoop.pdf
+pdfimages -list ios/FocusLab/Resources/Assets.xcassets/FocusLoop.imageset/FocusLoop.pdf
+pdffonts ios/FocusLab/Resources/Assets.xcassets/FocusLoop.imageset/FocusLoop.pdf
+```
+
+If the host has Cairo in a non-standard location, configure that host's dynamic loader for the command without writing the machine-specific library path into the repository. For example, macOS may require a temporary `DYLD_LIBRARY_PATH`, while Linux commonly uses `LD_LIBRARY_PATH`. A DPI of 72 maps each SVG user unit to one PDF point, producing the required 24×24-point media box.
+
+The resulting asset is configured as a single-scale template image with vector preservation enabled. SF Symbols remain the source for standard actions, and Focus Loop is reserved for identity. Any, Dark, and Tinted application icon compositions will be designed and validated separately.
 
 A vector PDF asset is compiled by Xcode for image use; it is not a runtime PDF document. App icons have different padding, background, transparency, appearance, and small-size requirements from an in-app brand symbol.
 
@@ -221,3 +249,9 @@ The 1024-unit rendering validates smooth geometry but does not constitute an app
 The validation sheet was rasterized at a one-user-unit-to-one-output-pixel scale with macOS Quick Look. In the light, dark, and monochrome treatments, the open ring, center point, and orbital accent remained separately recognizable at 16 pixels. The 24-, 48-, and 128-pixel samples retained clear spacing, and the 1024-pixel samples showed smooth curves without clipping.
 
 At 16 pixels, both dots are nevertheless close to a single effective raster pixel and look visibly more delicate than the ring. This is an accepted master-symbol limitation, not proof that every platform export will be equally legible. Android VectorDrawable and Xcode PDF rasterization must be checked independently in the later integration delivery, with optical small-size variants considered only if a target renderer loses either dot.
+
+### Native integration validation
+
+The Android `VectorDrawable` and iOS vector PDF preserve the 24×24 master geometry and are previewed at 16, 24, and 48 dp/pt in light and dark appearances. The iOS PDF has one 24×24-point page and contains neither embedded raster images nor fonts. At a 16-pixel rasterization, both dots remain separately recognizable, but antialiasing makes them visibly lighter than at 24 or 48 pixels; this remains the accepted minimum-size limitation.
+
+`color.action.primary` measures 5.92:1 against the approved light canvas and 11.40:1 against the approved dark canvas. On the Android device used for validation, the dark dynamic surface was sampled as `#130D09`, giving the dark token 11.67:1 contrast. Because Material You surfaces vary with the user's wallpaper, each experimental dynamic-color surface must still be checked independently; the fixed FocusLab palette remains the default design direction.
