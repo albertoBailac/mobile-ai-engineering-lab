@@ -53,9 +53,12 @@ struct FocusScreen: View {
 
     private var sessionConfiguration: some View {
         VStack(spacing: 0) {
+            FocusLoopMark()
+
             Text("Focus timer")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
+                .padding(.top, 16)
 
             Text("Choose a session and protect your attention.")
                 .font(.body)

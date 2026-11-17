@@ -49,6 +49,8 @@ fun FocusScreen(
                 .padding(horizontal = 24.dp, vertical = 48.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            FocusLoopMark()
+            Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.focus_title),
                 style = MaterialTheme.typography.headlineLarge,
