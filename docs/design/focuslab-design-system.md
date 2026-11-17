@@ -2,9 +2,9 @@
 
 ## Purpose and scope
 
-This document defines the approved **Calm precision** visual direction for FocusLab. It is the source of truth for the reusable visual language that Android Compose and iOS SwiftUI will implement in later deliveries.
+This document defines the approved **Calm precision** visual direction for FocusLab. It is the source of truth for the reusable visual language implemented by Android Compose and iOS SwiftUI.
 
-This delivery does not integrate resources into either application. It also keeps two concerns deliberately separate:
+The implementation keeps two concerns deliberately separate:
 
 - **Design tokens** describe reusable interface intent: canvas, content, actions, spacing, typography, shape, layout, and accessibility.
 - **Brand assets** identify FocusLab: the Focus Loop master symbol and, in a later delivery, separately designed application icons.
@@ -149,12 +149,65 @@ Minimum interaction targets are 48dp on Android and 44pt on iOS. Functional icon
 └──────────────────────┘    └────────────────────────┘
 ```
 
+## Implemented platform mapping
+
+The platforms share semantic values, hierarchy, breakpoints, and accessibility behavior while retaining native controls. They do not attempt pixel-identical rendering.
+
+### Android Compose
+
+- `ui/theme/Color.kt` maps the palette into a fixed Material 3 `ColorScheme`. `primary` represents the primary action and running state, `secondary` the completed state, `tertiary` the paused state, and `onSurfaceVariant` the idle and supporting-content role.
+- `ui/theme/Type.kt` supplies the documented system-font roles without adding a font dependency.
+- `FocusLabTheme` uses the fixed palette by default. Dynamic Material color is an internal opt-in parameter and remains disabled; it adds no preference or persistence.
+- `FocusScreen` uses `BoxWithConstraints`, `Surface`, `FilterChip`, `CircularProgressIndicator`, `Button`, and `OutlinedButton`. The status symbols are small tintable vector resources rendered through Material `Icon`.
+- The useful-width breakpoint is 680 dp after the 24 dp screen gutters. Compact content is limited to 520 dp; expanded content is limited to 920 dp with a 56 dp region gap.
+
+### iOS SwiftUI
+
+- Every semantic color is a named light/dark color set in `Assets.xcassets`. `FocusLabTheme.swift` exposes only those colors and the small set of shared layout metrics used by the screen.
+- `FocusScreen` uses `GeometryReader`, `ScrollView`, `Picker`, `Gauge`, `Button`, and SF Symbols. No custom control replaces native selection, progress, or action behavior.
+- The useful-width breakpoint is 680 points after the 24-point screen gutters. Compact content is limited to 520 points; expanded content is limited to 920 points with a 56-point region gap.
+- The Focus Loop remains a template vector PDF and standard actions and statuses use SF Symbols.
+
+### Shared responsive and accessibility decisions
+
+- The progress ring is 220 units in compact layouts and 240 in expanded layouts, inside a 28-unit rounded surface.
+- At ordinary text sizes the remaining time is centered in the ring. At Android font scale 180% or greater, or iOS accessibility Dynamic Type sizes, the time moves below the decorative ring so it can continue scaling without clipping.
+- The ring and visible time form one accessible timer element. Its remaining-time value is available when focused, but it is not exposed as a live region or continuously changing progress control, so individual ticks are not announced.
+- Completion remains the only polite announcement. Status icons are decorative and each status keeps a visible text label, so color is never the only signal.
+
+## Visual change record
+
+| Area | Previous UI | Calm precision UI |
+| --- | --- | --- |
+| Color | Android dynamic Material colors and iOS system colors | Fixed semantic light/dark palette on both platforms |
+| Identity | Focus Loop mark followed directly by the title | Focus Loop mark, `FOCUSLAB` identity label, then screen purpose |
+| Timer | 180-unit progress control with time below it | 220/240-unit progress ring with centered time and accessibility reflow |
+| Grouping | Controls placed directly on the screen background | Timer, status, and actions grouped in a dominant 28-unit rounded surface |
+| Status | Secondary-colored text only | State-specific color, icon, and text |
+| Expanded Android | Single column at every width | Two-region layout at 680 units of useful width |
+| Large text | Scrollable but actions always horizontal on Android | Timer reflow and vertically stacked actions on both platforms |
+
+## Validation matrix
+
+| State or condition | Android evidence | iOS evidence | Manual check still required |
+| --- | --- | --- | --- |
+| Idle, running, paused, completed | Light/dark Compose previews for every state | Light/dark SwiftUI previews for every state | Compare hierarchy, state color, icon, and action set |
+| Compact portrait 320×568 | Dedicated preview | Dedicated preview | Confirm full reachability by scrolling |
+| Compact landscape 667×375 | Dedicated dark preview | Dedicated dark preview and XCUITest rotation | Confirm no clipped surface or actions |
+| Expanded 834×1194 and 1194×834 | 834×1194 preview | iPad portrait/landscape previews and iPad XCUITest destination | Confirm two regions and 56-unit gap |
+| Large text | 390×844 preview at 200% font scale | Accessibility 3 previews | Confirm time reflows below ring and actions stack |
+| Light and dark | Preview matrix uses the fixed palette | Preview matrix uses adaptive color assets | Check contrast and system increased-contrast mode |
+| RTL | Layout uses start/end-independent Compose primitives | Explicit right-to-left preview | Verify reading order and mirrored native controls |
+| Screen reader | One timer semantics node; completion is a polite live region | One `timerGauge` element; explicit completion announcement | TalkBack and VoiceOver traversal, tick silence, and completion announcement |
+| Non-color differentiation | Icon plus text for every status | SF Symbol plus text for every status | Grayscale and differentiate-without-color |
+| Alternative input | Minimum native touch targets | Native control sizes and identifiers | Switch Access, Voice Access, and Voice Control |
+
 ## Accessibility
 
 - Normal text meets at least 4.5:1 contrast; large text and essential non-text graphics meet at least 3:1.
 - Color is never the only status signal.
 - Reading order is identity, title and description, duration, remaining time, status, then actions.
-- The timer is exposed as one accessible element with a localized label, remaining-time value, and progress. Duplicate visual time text is hidden from the accessibility tree.
+- The timer is exposed as one accessible element with a localized label and remaining-time value. The decorative progress ring and duplicate visual time text are hidden from the accessibility tree.
 - Completion is announced politely once. Individual timer ticks are not announced.
 - Decorative brand marks and icons inside already labeled controls are hidden from assistive technologies.
 - Layouts must survive Android font scaling to 200% and iOS accessibility Dynamic Type through reflow and scrolling.

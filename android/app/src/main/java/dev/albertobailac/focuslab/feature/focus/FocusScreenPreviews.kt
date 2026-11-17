@@ -71,6 +71,72 @@ private fun CompletedFocusScreenPreview() {
     )
 }
 
+@Preview(
+    name = "Compact portrait 320x568",
+    group = "Adaptive layouts",
+    showBackground = true,
+    widthDp = 320,
+    heightDp = 568,
+)
+@Composable
+private fun CompactPortraitFocusScreenPreview() {
+    FocusScreenPreview(FocusUiState())
+}
+
+@Preview(
+    name = "Compact landscape 667x375",
+    group = "Adaptive layouts",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    widthDp = 667,
+    heightDp = 375,
+)
+@Composable
+private fun CompactLandscapeFocusScreenPreview() {
+    FocusScreenPreview(
+        FocusUiState(
+            remainingMillis = 12L * 60L * 1_000L,
+            status = FocusTimerStatus.Running,
+        ),
+    )
+}
+
+@Preview(
+    name = "Expanded 834x1194",
+    group = "Adaptive layouts",
+    showBackground = true,
+    widthDp = 834,
+    heightDp = 1194,
+)
+@Composable
+private fun ExpandedFocusScreenPreview() {
+    FocusScreenPreview(
+        FocusUiState(
+            durationMillis = LONG_FOCUS_DURATION_MILLIS,
+            remainingMillis = 31L * 60L * 1_000L + 15L * 1_000L,
+            status = FocusTimerStatus.Paused,
+        ),
+    )
+}
+
+@Preview(
+    name = "Font scale 200%",
+    group = "Accessibility",
+    showBackground = true,
+    widthDp = 390,
+    heightDp = 844,
+    fontScale = 2f,
+)
+@Composable
+private fun AccessibilityFocusScreenPreview() {
+    FocusScreenPreview(
+        FocusUiState(
+            remainingMillis = 20L * 60L * 1_000L,
+            status = FocusTimerStatus.Running,
+        ),
+    )
+}
+
 @Composable
 private fun FocusScreenPreview(uiState: FocusUiState) {
     FocusLabTheme {
