@@ -8,7 +8,7 @@ struct FocusLoopMark: View {
             .renderingMode(.template)
             .resizable()
             .scaledToFit()
-            .foregroundStyle(Color("ActionPrimary"))
+            .foregroundStyle(FocusLabTheme.actionPrimary)
             .frame(width: size, height: size)
             .accessibilityHidden(true)
     }

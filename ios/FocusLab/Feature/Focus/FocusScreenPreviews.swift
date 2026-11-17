@@ -140,3 +140,11 @@ import SwiftUI
     )
     .environment(\.dynamicTypeSize, .accessibility3)
 }
+
+#Preview("Right to Left") {
+    FocusScreen(
+        state: FocusState(duration: .long, remainingMilliseconds: 31 * 60 * 1_000, status: .paused),
+        onAction: { _ in }
+    )
+    .environment(\.layoutDirection, .rightToLeft)
+}

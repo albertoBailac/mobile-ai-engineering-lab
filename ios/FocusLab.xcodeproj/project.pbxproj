@@ -21,6 +21,7 @@
 		A1000000000000000000000E /* FocusLoopMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* FocusLoopMark.swift */; };
 		A1000000000000000000000F /* FocusLoopMarkPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* FocusLoopMarkPreviews.swift */; };
 		A10000000000000000000010 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* Assets.xcassets */; };
+		A10000000000000000000011 /* FocusLabTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* FocusLabTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		A20000000000000000000011 /* FocusLoopMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLoopMark.swift; sourceTree = "<group>"; };
 		A20000000000000000000012 /* FocusLoopMarkPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLoopMarkPreviews.swift; sourceTree = "<group>"; };
 		A20000000000000000000013 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000000000000000000014 /* FocusLabTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLabTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +82,7 @@
 		};
 		A70000000000000000000002 /* FocusLab */ = {
 			isa = PBXGroup;
-			children = (A70000000000000000000003 /* App */, A70000000000000000000004 /* Feature */, A70000000000000000000006 /* Resources */);
+			children = (A70000000000000000000003 /* App */, A70000000000000000000004 /* Feature */, A70000000000000000000010 /* DesignSystem */, A70000000000000000000006 /* Resources */);
 			path = FocusLab;
 			sourceTree = "<group>";
 		};
@@ -102,6 +104,7 @@
 			sourceTree = "<group>";
 		};
 		A70000000000000000000006 /* Resources */ = {isa = PBXGroup; children = (A20000000000000000000009 /* Localizable.xcstrings */, A20000000000000000000013 /* Assets.xcassets */); path = Resources; sourceTree = "<group>"; };
+		A70000000000000000000010 /* DesignSystem */ = {isa = PBXGroup; children = (A20000000000000000000014 /* FocusLabTheme.swift */); path = DesignSystem; sourceTree = "<group>"; };
 		A70000000000000000000007 /* FocusLabTests */ = {isa = PBXGroup; children = (A2000000000000000000000A, A2000000000000000000000B, A2000000000000000000000C); path = FocusLabTests; sourceTree = "<group>"; };
 		A70000000000000000000008 /* FocusLabUITests */ = {isa = PBXGroup; children = (A2000000000000000000000D); path = FocusLabUITests; sourceTree = "<group>"; };
 		A70000000000000000000009 /* Products */ = {isa = PBXGroup; children = (A2000000000000000000000E, A2000000000000000000000F, A20000000000000000000010); name = Products; sourceTree = "<group>"; };
@@ -176,7 +179,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A80000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A1000000000000000000000E, A1000000000000000000000F); runOnlyForDeploymentPostprocessing = 0; };
+		A80000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A1000000000000000000000E, A1000000000000000000000F, A10000000000000000000011); runOnlyForDeploymentPostprocessing = 0; };
 		A80000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A1000000000000000000000A, A1000000000000000000000B, A1000000000000000000000C); runOnlyForDeploymentPostprocessing = 0; };
 		A80000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A1000000000000000000000D); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */

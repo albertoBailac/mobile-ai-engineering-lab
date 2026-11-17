@@ -7,19 +7,28 @@ struct FocusScreen: View {
     let onAction: (FocusAction) -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .largeTitle) private var timerTextSize: CGFloat = 56
 
     var body: some View {
-        GeometryReader { geometry in
-            let availableWidth = max(geometry.size.width - 48, 0)
+        ZStack {
+            FocusLabTheme.canvas
+                .ignoresSafeArea()
 
-            ScrollView {
-                adaptiveContent(availableWidth: availableWidth)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 40)
-                    .frame(maxWidth: .infinity)
+            GeometryReader { geometry in
+                let availableWidth = max(
+                    geometry.size.width - (FocusLabTheme.Metrics.compactGutter * 2),
+                    0
+                )
+
+                ScrollView {
+                    adaptiveContent(availableWidth: availableWidth)
+                        .padding(.horizontal, FocusLabTheme.Metrics.compactGutter)
+                        .padding(.vertical, 40)
+                        .frame(maxWidth: .infinity)
+                }
             }
-            .background(Color(.systemBackground))
         }
+        .foregroundStyle(FocusLabTheme.contentPrimary)
         .onChange(of: state.status) { _, status in
             if status == .completed {
                 AccessibilityNotification.Announcement(
@@ -30,13 +39,13 @@ struct FocusScreen: View {
     }
 
     private func adaptiveContent(availableWidth: CGFloat) -> some View {
-        let usesRegularLayout = availableWidth >= 680
+        let usesRegularLayout = availableWidth >= FocusLabTheme.Metrics.expandedBreakpoint
         let layout = usesRegularLayout
-            ? AnyLayout(HStackLayout(alignment: .center, spacing: 56))
+            ? AnyLayout(HStackLayout(alignment: .center, spacing: FocusLabTheme.Metrics.regularGap))
             : AnyLayout(VStackLayout(spacing: 0))
         let sectionWidth = usesRegularLayout
-            ? min((availableWidth - 56) / 2, 402)
-            : min(availableWidth, 520)
+            ? min((availableWidth - FocusLabTheme.Metrics.regularGap) / 2, 432)
+            : min(availableWidth, FocusLabTheme.Metrics.compactMaxWidth)
 
         return layout {
             sessionConfiguration
@@ -44,16 +53,27 @@ struct FocusScreen: View {
 
             timerAndActions(
                 availableWidth: sectionWidth,
-                topPadding: usesRegularLayout ? 0 : 48
+                ringSize: usesRegularLayout ? 240 : 220
             )
+            .padding(.top, usesRegularLayout ? 0 : 48)
             .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: usesRegularLayout ? 860 : 520)
+        .frame(
+            maxWidth: usesRegularLayout
+                ? FocusLabTheme.Metrics.expandedMaxWidth
+                : FocusLabTheme.Metrics.compactMaxWidth
+        )
     }
 
     private var sessionConfiguration: some View {
         VStack(spacing: 0) {
             FocusLoopMark()
+
+            Text("FOCUSLAB")
+                .font(.caption.weight(.semibold))
+                .tracking(1.6)
+                .foregroundStyle(FocusLabTheme.actionPrimary)
+                .padding(.top, 8)
 
             Text("Focus timer")
                 .font(.largeTitle.bold())
@@ -62,7 +82,7 @@ struct FocusScreen: View {
 
             Text("Choose a session and protect your attention.")
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(FocusLabTheme.contentSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.top, 8)
 
@@ -72,6 +92,7 @@ struct FocusScreen: View {
                 }
             }
             .pickerStyle(.segmented)
+            .tint(FocusLabTheme.actionPrimary)
             .disabled(state.status == .running)
             .accessibilityIdentifier("durationPicker")
             .padding(.top, 32)
@@ -80,37 +101,89 @@ struct FocusScreen: View {
 
     private func timerAndActions(
         availableWidth: CGFloat,
-        topPadding: CGFloat
+        ringSize: CGFloat
     ) -> some View {
         VStack(spacing: 0) {
-            Gauge(value: state.progress) {
-                Text("Focus progress")
-            }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(.accentColor)
-            .controlSize(.extraLarge)
-            .scaleEffect(2.4)
-            .frame(width: 180, height: 180)
-            .accessibilityLabel("Focus timer")
-            .accessibilityValue(state.spokenRemainingTime)
-            .accessibilityIdentifier("timerGauge")
-            .padding(.top, topPadding)
+            timerDisplay(ringSize: ringSize)
 
-            Text(state.formattedTime)
-                .font(.system(.largeTitle, design: .rounded, weight: .semibold))
-                .monospacedDigit()
-                .accessibilityHidden(true)
+            statusIndicator
                 .padding(.top, 24)
+
+            actionButtons(availableWidth: max(availableWidth - 48, 0))
+                .padding(.top, 28)
+        }
+        .padding(24)
+        .background(
+            FocusLabTheme.surfacePrimary,
+            in: RoundedRectangle(
+                cornerRadius: FocusLabTheme.Metrics.timerCornerRadius,
+                style: .continuous
+            )
+        )
+        .overlay {
+            RoundedRectangle(
+                cornerRadius: FocusLabTheme.Metrics.timerCornerRadius,
+                style: .continuous
+            )
+            .stroke(FocusLabTheme.borderSubtle.opacity(0.45), lineWidth: 1)
+        }
+    }
+
+    @ViewBuilder
+    private func timerDisplay(ringSize: CGFloat) -> some View {
+        let usesAccessibleLayout = dynamicTypeSize.isAccessibilitySize
+
+        Group {
+            if usesAccessibleLayout {
+                VStack(spacing: 16) {
+                    progressGauge(ringSize: ringSize)
+                    timerText
+                }
+            } else {
+                ZStack {
+                    progressGauge(ringSize: ringSize)
+                    timerText
+                        .minimumScaleFactor(0.6)
+                        .frame(width: ringSize * 0.56)
+                }
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Focus timer")
+        .accessibilityValue(state.spokenRemainingTime)
+        .accessibilityIdentifier("timerGauge")
+    }
+
+    private func progressGauge(ringSize: CGFloat) -> some View {
+        Gauge(value: state.progress) {
+            EmptyView()
+        }
+        .gaugeStyle(.accessoryCircularCapacity)
+        .tint(FocusLabTheme.actionPrimary)
+        .controlSize(.extraLarge)
+        .scaleEffect(ringSize / 76)
+        .frame(width: ringSize, height: ringSize)
+        .accessibilityHidden(true)
+    }
+
+    private var timerText: some View {
+        Text(state.formattedTime)
+            .font(.system(size: timerTextSize, weight: .semibold, design: .rounded))
+            .monospacedDigit()
+            .lineLimit(1)
+            .accessibilityHidden(true)
+    }
+
+    private var statusIndicator: some View {
+        HStack(spacing: 8) {
+            Image(systemName: statusSymbol)
+                .accessibilityHidden(true)
 
             Text(statusLabel)
                 .font(.headline)
-                .foregroundStyle(.secondary)
                 .accessibilityIdentifier("statusLabel")
-                .padding(.top, 28)
-
-            actionButtons(availableWidth: availableWidth)
-                .padding(.top, 28)
         }
+        .foregroundStyle(statusColor)
     }
 
     private var durationBinding: Binding<FocusDuration> {
@@ -126,6 +199,24 @@ struct FocusScreen: View {
         case .running: "Focus in progress"
         case .paused: "Session paused"
         case .completed: "Session complete"
+        }
+    }
+
+    private var statusSymbol: String {
+        switch state.status {
+        case .idle: "timer"
+        case .running: "play.fill"
+        case .paused: "pause.fill"
+        case .completed: "checkmark.circle.fill"
+        }
+    }
+
+    private var statusColor: Color {
+        switch state.status {
+        case .idle: FocusLabTheme.statusIdle
+        case .running: FocusLabTheme.statusRunning
+        case .paused: FocusLabTheme.statusPaused
+        case .completed: FocusLabTheme.statusCompleted
         }
     }
 
@@ -152,6 +243,7 @@ struct FocusScreen: View {
                     onAction(.reset)
                 }
                 .buttonStyle(.bordered)
+                .tint(FocusLabTheme.actionPrimary)
                 .accessibilityIdentifier("resetButton")
             }
         }
@@ -167,6 +259,8 @@ struct FocusScreen: View {
             onAction(action)
         }
         .buttonStyle(.borderedProminent)
+        .tint(FocusLabTheme.actionPrimary)
+        .foregroundStyle(FocusLabTheme.actionOnPrimary)
         .accessibilityIdentifier(identifier)
     }
 }
