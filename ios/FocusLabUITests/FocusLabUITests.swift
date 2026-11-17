@@ -37,6 +37,7 @@ final class FocusLabUITests: XCTestCase {
         app.buttons["Start"].tap()
         XCTAssertTrue(app.buttons["Pause"].waitForExistence(timeout: 2))
         XCTAssertTrue(app.staticTexts["Focus in progress"].exists)
+        XCTAssertFalse(app.segmentedControls["durationPicker"].isEnabled)
 
         app.buttons["Pause"].tap()
         XCTAssertTrue(app.buttons["Resume"].exists)
